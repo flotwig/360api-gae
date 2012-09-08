@@ -53,12 +53,17 @@ class apiHandler(webapp2.RequestHandler):
 				tmp = {}
 				attribs = lastPlayed.findall(docType+'span');
 				for attrib in attribs:
-					if attrib.text.isdigit():
+					if attrib.text==None:
+						continue
+					elif attrib.text.isdigit():
 						tmp[attrib.attrib['class']] = int(attrib.text)
 					else:
 						tmp[attrib.attrib['class']] = attrib.text
 				tmp['Pictures'] = {'Tile32px':lastPlayed.find(docType+'img').attrib['src']}
-				tmp['LastPlayed'] = int(time.mktime(time.strptime(tmp['LastPlayed'],'%m/%d/%Y')))
+				if 'LastPlayed' in tmp:
+					tmp['LastPlayed'] = int(time.mktime(time.strptime(tmp['LastPlayed'],'%m/%d/%Y')))
+				else:
+					tmp['LastPlayed'] = 0
 				output['LastPlayed'].append(tmp)
 			self.response.write(json.JSONEncoder().encode(output))
 		else:
