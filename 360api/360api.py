@@ -11,11 +11,11 @@ class apiHandler(webapp2.RequestHandler):
 			self.response.headers['Content-Type'] = 'application/json'
 			docType = '{http://www.w3.org/1999/xhtml}'
 			gamertag = self.request.GET['gamertag']
-			msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+urllib.urlencode(gamertag)+'.card')
-			msPage = msPageHandle.read()
-			msPageHandle.close
 			output = {}
 			try:
+				msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+urllib.urlencode(gamertag)+'.card')
+				msPage = msPageHandle.read()
+				msPageHandle.close
 				parse = ET.fromstring(msPage)
 			finally:
 				output['GamertagExists'] = False
