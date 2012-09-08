@@ -13,11 +13,11 @@ class apiHandler(webapp2.RequestHandler):
 			gamertag = self.request.GET['gamertag']
 			output = {}
 			try:
-				msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+urllib.urlencode(gamertag)+'.card')
+				msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+gamertag+'.card')
 				msPage = msPageHandle.read()
 				msPageHandle.close
 				parse = ET.fromstring(msPage)
-			finally:
+			except:
 				output['GamertagExists'] = False
 				self.response.write(json.JSONEncoder().encode(output))
 				return
@@ -36,8 +36,7 @@ class apiHandler(webapp2.RequestHandler):
 			output['Pictures']['Tile64px'] = parse.find('.//*[@id="Gamerpic"]').attrib['src']
 			output['Pictures']['Tile32px'] = output['Pictures']['Tile64px'].replace('avatarpic-l.png','avatarpic-s.png')
 			output['Pictures']['FullBody'] = output['Pictures']['Tile64px'].replace('avatarpic-l.png','avatar-body.png')
-			reputationRaw = parse.findall('.//*[@class="RepContainer"]/*')
-			del reputationRaw[0] # removes the label element because i am butt w/ xpath
+			reputationRaw = parse.findall('.//*[@class="RepContainer"]/'+docType+'div')
 			output['Reputation'] = 0
 			for star in reputationRaw:
 				if star.attrib['class']=='Star Full':
