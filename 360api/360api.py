@@ -11,11 +11,16 @@ class apiHandler(webapp2.RequestHandler):
 			self.response.headers['Content-Type'] = 'application/json'
 			docType = '{http://www.w3.org/1999/xhtml}'
 			gamertag = self.request.GET['gamertag']
-			msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+gamertag+'.card')
+			msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+urllib.urlencode(gamertag)+'.card')
 			msPage = msPageHandle.read()
 			msPageHandle.close
-			parse = ET.fromstring(msPage)
 			output = {}
+			try:
+				parse = ET.fromstring(msPage)
+			finally:
+				output['GamertagExists'] = False
+				self.response.write(json.JSONEncoder().encode(output))
+				return
 			output['Gamertag'] = parse.find('.//*[@id="Gamertag"]').text
 			output['Gamerscore'] = parse.find('.//*[@id="Gamerscore"]').text
 			if output['Gamerscore']=='--':
@@ -42,7 +47,7 @@ class apiHandler(webapp2.RequestHandler):
 				elif star.attrib['class']=='Star Quarter':
 					output['Reputation'] += .25
 				elif star.attrib['class']=='Star Half':
-					output['Reputation'] += 50
+					output['Reputation'] += .5
 			lastPlayedRaw = parse.findall('.//*[@id="PlayedGames"]/'+docType+'li/'+docType+'a');
 			output['LastPlayed'] = []
 			for lastPlayed in lastPlayedRaw:
