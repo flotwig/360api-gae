@@ -33,9 +33,9 @@ class apiHandler(webapp2.RequestHandler):
 			output['Subscription'] = mainDivRaw[1]
 			output['Gender'] = mainDivRaw[2]
 			output['Pictures'] = {}
-			output['Pictures']['Tile64px'] = parse.find('.//*[@id="Gamerpic"]').attrib['src']
-			output['Pictures']['Tile32px'] = output['Pictures']['Tile64px'].replace('avatarpic-l.png','avatarpic-s.png')
-			output['Pictures']['FullBody'] = output['Pictures']['Tile64px'].replace('avatarpic-l.png','avatar-body.png')
+			output['Pictures']['Tile32px'] = 'http://avatar.xboxlive.com/avatar/'+urllib.quote_plus(gamertag)+'/avatarpic-s.png'
+			output['Pictures']['Tile64px'] = 'http://avatar.xboxlive.com/avatar/'+urllib.quote_plus(gamertag)+'/avatarpic-l.png'
+			output['Pictures']['FullBody'] = 'http://avatar.xboxlive.com/avatar/'+urllib.quote_plus(gamertag)+'/avatar-body.png'
 			reputationRaw = parse.findall('.//*[@class="RepContainer"]/'+docType+'div')
 			output['Reputation'] = 0
 			for star in reputationRaw:
