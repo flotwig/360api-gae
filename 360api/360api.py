@@ -11,9 +11,12 @@ class apiHandler(webapp2.RequestHandler):
 			self.response.headers['Content-Type'] = 'application/json'
 			docType = '{http://www.w3.org/1999/xhtml}'
 			gamertag = self.request.GET['gamertag']
+			gamertag = urllib.unquote(gamertag)
+			if 'callback' in self.request.GET:
+				self.response.write(self.request.GET['callback']+'(')
 			output = {}
 			try:
-				msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+gamertag+'.card')
+				msPageHandle = urllib.urlopen('http://gamercard.xbox.com/en-US/'+urllib.quote(gamertag,'/ ')+'.card')
 				msPage = msPageHandle.read()
 				msPageHandle.close
 				parse = ET.fromstring(msPage)
@@ -66,8 +69,10 @@ class apiHandler(webapp2.RequestHandler):
 					tmp['LastPlayed'] = 0
 				output['LastPlayed'].append(tmp)
 			self.response.write(json.JSONEncoder().encode(output))
+			if 'callback' in self.request.GET:
+				self.response.write(');')
 		else:
 			self.response.headers['Content-Type'] = 'text/plain'
-			self.response.write('Pass a gamertag in GET like so: /?gamertag=flotwig')
+			self.response.write('Pass a gamertag in GET like so: /?gamertag=flotwig<br/>You can also pass in a JSONP callback with the "callback" parameter')
 
 app = webapp2.WSGIApplication([('/', apiHandler)],debug=True)
