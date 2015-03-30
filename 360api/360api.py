@@ -6,7 +6,6 @@ import xml.etree.ElementTree as ET
 
 class apiHandler(webapp2.RequestHandler):
 	def get(self):
-		self.response.headers['Server'] = 'Xbox 360 Gamertag API'
 		if 'gamertag' in self.request.GET:
 			self.response.headers['Content-Type'] = 'application/json'
 			docType = '{http://www.w3.org/1999/xhtml}'
