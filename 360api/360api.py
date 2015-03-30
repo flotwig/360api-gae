@@ -72,6 +72,6 @@ class apiHandler(webapp2.RequestHandler):
 				self.response.write(');')
 		else:
 			self.response.headers['Content-Type'] = 'text/plain'
-			self.response.write('Pass a gamertag in GET like so: /?gamertag=flotwig\nYou can also pass in a JSONP callback with the "callback" parameter')
+			self.response.write('Pass a gamertag in GET like so: /?gamertag=flotwig\nYou can also pass in a JSONP callback with the "callback" parameter\n\nhttps://github.com/flotwig/360api-gae')
 
 app = webapp2.WSGIApplication([('/', apiHandler)],debug=True)
